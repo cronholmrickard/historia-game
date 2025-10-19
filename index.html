@@ -27,11 +27,19 @@
           "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         background: #0b0f14;
         color: var(--text);
+        overflow-x: hidden; /* ban horizontal scroll */
+        overflow-y: auto;   /* allow vertical scroll */
+        overscroll-behavior-y: contain;
       }
       .wrap {
         max-width: 900px;
         margin: 0 auto;
         padding: 18px;
+        min-height: 100dvh; /* allow content to grow for vertical scroll */
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
       }
       h1 {
         margin: 0 0 12px 0;
@@ -59,6 +67,10 @@
         border: 1px solid #223247;
         border-radius: 16px;
         padding: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
       }
       .card.score-card {
         background: #ffffff;
@@ -69,17 +81,25 @@
         display: flex;
         gap: 12px;
         align-items: stretch;
+        flex: 1 1 auto;
+        min-height: 0;
       }
+      .cards-row > .card { min-width: 0; }
       @media (max-width: 700px) {
         .cards-row {
           flex-direction: column;
         }
+        .match .cols { grid-template-columns: 1fr; }
+        .term { font-size: 20px; }
+        .def { font-size: 15px; }
       }
+      .score-left .progress { width: min(160px, 100%); }
       .score-wrap {
         display: flex;
         align-items: center;
         gap: 16px;
         justify-content: space-between;
+        flex-wrap: wrap;
       }
       .score-left {
         display: flex;
@@ -124,15 +144,27 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+        flex: 1 1 auto;
+        min-width: 0;
       }
+      .flash.matching { align-items: stretch; justify-content: flex-start; }
       .term {
-        font-size: 26px;
+        font-size: 22px;
         font-weight: 800;
       }
       .def {
-        font-size: 18px;
+        font-size: 16px;
         color: var(--muted);
       }
+      .hidden { display: none; }
+      .match { width: 100%; align-self: stretch; max-height: 100%; }
+      .flash.matching .match { overflow: auto; }
+      .match .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+      .match .col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+      .chip { display: block; width: 100%; max-width: 100%; padding: 12px 14px; border-radius: 12px; background: #0f1722; border: 1px solid #223247; color: var(--text); text-align: left; white-space: normal; word-break: break-word; font-size: 16px; line-height: 1.3; }
+      .chip.sel { outline: 2px solid var(--accent); }
+      .chip.ok { background: #11301f; border-color: #1f7a43; color: #b7ffd3; }
+      #match:not(.hidden) ~ #controls { display: none !important; }
       .row {
         display: flex;
         gap: 8px;
@@ -180,10 +212,16 @@
 
       <div class="cards-row">
         <div class="card" style="flex:1 1 60%">
-          <div class="flash">
+          <div class="flash" id="flash">
           <div class="term" id="front">—</div>
           <div class="def" id="back">—</div>
-          <div class="row">
+          <div id="match" class="match hidden">
+            <div class="cols">
+              <div class="col" id="matchTerms"></div>
+              <div class="col" id="matchDefs"></div>
+            </div>
+          </div>
+          <div class="row" id="controls">
             <button id="wrong" class="btn-bad">Fel</button>
             <button id="good" class="btn-good">Rätt</button>
           </div>
@@ -234,12 +272,15 @@
         }))
       );
       let filter = "Alla";
-      let queue = [];
+      let queue = []; // sequence of units: {type:'single', card} or {type:'match', cards:[], matched:Set}
       let cursor = 0;
       const MIX_CHANCE = 0.4; // chance to show mismatched definition
       let currentIsMatch = true;
       let currentDefText = "";
       const score = { good: 0, wrong: 0 };
+      const GROUP_SIZE = 3;
+      const GROUP_PROB = 0.45; // likelihood a unit is a 5-match group if possible
+      let roundRemaining = 0; // items left in current round (singles count as 1, match counts unresolved pairs)
       const HAPPY_IMG = 'happy.png';
       const SAD_IMG = 'sad.png';
 
@@ -247,6 +288,7 @@
       const el = {
         front: $("#front"),
         back: $("#back"),
+        flash: $("#flash"),
         bar: $("#bar"),
         left: $("#left"),
         good: $("#good"),
@@ -257,45 +299,86 @@
         scoreGood: $("#scoreGood"),
         scoreWrong: $("#scoreWrong"),
         scoreAcc: $("#scoreAcc"),
+        match: $("#match"),
+        matchTerms: $("#matchTerms"),
+        matchDefs: $("#matchDefs"),
+        controls: $("#controls"),
       };
 
       // Initial mood image and score
       el.mood.src = HAPPY_IMG;
       updateScore();
 
+      function shuffleArray(arr){
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
       function buildQueue() {
         const all = deck.filter(
           (c) => (filter === "Alla" || c.section === filter) && getBox(c.id) < BOX_MAX
         );
-        queue = all.slice();
-        shuffleQueue();
+        const pool = all.slice();
+        shuffleArray(pool);
+        queue = [];
+        roundRemaining = 0;
+        while (pool.length) {
+          if (pool.length >= GROUP_SIZE && Math.random() < GROUP_PROB) {
+            const size = Math.min(GROUP_SIZE, pool.length);
+            const group = pool.splice(0, size);
+            queue.push({ type: 'match', cards: group, matched: {} });
+            roundRemaining += group.length;
+          } else {
+            const card = pool.shift();
+            queue.push({ type: 'single', card });
+            roundRemaining += 1;
+          }
+        }
         cursor = 0;
         prepareViewForCurrent();
         update();
       }
 
       function shuffleQueue() {
-        for (let i = queue.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [queue[i], queue[j]] = [queue[j], queue[i]];
-        }
+        shuffleArray(queue);
       }
 
-      function current() {
+      function currentUnit() {
         return queue[cursor];
       }
 
       function update() {
-        const c = current();
-        if (!c) {
+        const unit = currentUnit();
+        if (!unit) {
           el.front.textContent = "Inga kort";
           el.back.textContent = "";
-          // no category shown
+          el.match.classList.add('hidden');
+          el.controls.classList.add('hidden');
+          el.front.classList.remove('hidden');
+          el.back.classList.remove('hidden');
           stats();
           return;
         }
-        el.front.textContent = c.term;
-        el.back.textContent = currentDefText || c.definition;
+        if (unit.type === 'single') {
+          el.flash.classList.remove('matching');
+          el.match.classList.add('hidden');
+          el.controls.classList.remove('hidden');
+          el.front.classList.remove('hidden');
+          el.back.classList.remove('hidden');
+          // 'prepareViewForCurrent' already set currentDefText/currentIsMatch
+          el.front.textContent = unit.card.term;
+          el.back.textContent = currentDefText || unit.card.definition;
+        } else if (unit.type === 'match') {
+          el.flash.classList.add('matching');
+          el.controls.classList.add('hidden');
+          el.front.classList.add('hidden');
+          el.back.classList.add('hidden');
+          el.match.classList.remove('hidden');
+          renderMatch(unit);
+        }
         stats();
       }
 
@@ -305,59 +388,116 @@
         );
         const doneCt = all.filter((c) => getBox(c.id) >= BOX_MAX).length;
         const tot = all.length;
-        const left = tot - doneCt;
-        if (el.left) el.left.textContent = left;
+        if (el.left) el.left.textContent = String(roundRemaining);
         if (el.bar) el.bar.style.width = tot ? Math.round((doneCt / tot) * 100) + "%" : "0%";
       }
 
-      function next() {
-        // If current was just completed, rebuild to exclude it
+      function finishUnit() {
+        // remove current unit and move on; if none left, start a new round
+        if (queue.length === 0) { buildQueue(); return; }
+        queue.splice(cursor, 1);
+        if (cursor >= queue.length) cursor = 0;
         if (queue.length === 0) {
           buildQueue();
-          return;
+        } else {
+          prepareViewForCurrent();
+          update();
         }
-        cursor = (cursor + 1) % Math.max(1, queue.length);
-        prepareViewForCurrent();
-        update();
       }
       function prepareViewForCurrent() {
-        const c = current();
-        if (!c) {
+        const unit = currentUnit();
+        if (!unit) {
           currentIsMatch = true;
           currentDefText = "";
           return;
         }
-        const pool = deck.filter((x) =>
-          (filter === "Alla" || x.section === filter)
-        );
-        const canMismatch = pool.length > 1;
-        const wantMismatch = canMismatch && Math.random() < MIX_CHANCE;
-        if (wantMismatch) {
-          let other;
-          do {
-            other = pool[Math.floor(Math.random() * pool.length)];
-          } while (other.id === c.id && pool.length > 1);
-          currentIsMatch = other.id === c.id; // if failed to find other when only one card
-          currentDefText = other.definition;
-        } else {
-          currentIsMatch = true;
-          currentDefText = c.definition;
+        if (unit.type === 'single') {
+          const pool = deck.filter((x) => (filter === "Alla" || x.section === filter));
+          const canMismatch = pool.length > 1;
+          const wantMismatch = canMismatch && Math.random() < MIX_CHANCE;
+          if (wantMismatch) {
+            let other;
+            do {
+              other = pool[Math.floor(Math.random() * pool.length)];
+            } while (other.id === unit.card.id && pool.length > 1);
+            currentIsMatch = other.id === unit.card.id; // if failed to find other when only one card
+            currentDefText = other.definition;
+          } else {
+            currentIsMatch = true;
+            currentDefText = unit.card.definition;
+          }
         }
       }
-      function reinsertCurrent(minAhead = 2, maxAhead = 5) {
-        if (queue.length <= 1) return;
-        const [card] = queue.splice(cursor, 1);
-        const offset = Math.floor(Math.random() * (maxAhead - minAhead + 1)) + minAhead;
-        const newIndex = Math.min(queue.length, cursor + offset);
-        queue.splice(newIndex, 0, card);
-        if (cursor >= queue.length) cursor = 0;
+
+      function renderMatch(unit) {
+        // Build term buttons
+        el.matchTerms.innerHTML = unit.cards
+          .map((c) => `<button class="chip term" data-id="${c.id}">${c.term}</button>`)
+          .join("");
+        // Build definition buttons (shuffled)
+        const defs = unit.cards.map((c) => ({ id: c.id, t: c.definition }));
+        shuffleArray(defs);
+        el.matchDefs.innerHTML = defs
+          .map((d) => `<button class="chip def" data-id="${d.id}">${d.t}</button>`)
+          .join("");
+        let selected = null;
+        const termEls = Array.from(el.matchTerms.querySelectorAll('.term'));
+        const defEls = Array.from(el.matchDefs.querySelectorAll('.def'));
+        const markMatched = (id) => {
+          const t = termEls.find(e => e.dataset.id === id);
+          const d = defEls.find(e => e.dataset.id === id);
+          if (t) { t.classList.add('ok'); t.disabled = true; }
+          if (d) { d.classList.add('ok'); d.disabled = true; }
+        };
+        termEls.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            termEls.forEach(b => b.classList.remove('sel'));
+            if (btn.disabled) return;
+            selected = btn.dataset.id;
+            btn.classList.add('sel');
+          });
+        });
+        defEls.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            if (!selected || btn.disabled) return;
+            const correct = btn.dataset.id === selected;
+            if (correct) {
+              // score and progress
+              score.good++;
+              el.mood.src = HAPPY_IMG;
+              setBox(selected, 1);
+              unit.matched[selected] = true;
+              roundRemaining = Math.max(0, roundRemaining - 1);
+              markMatched(selected);
+              // clear selection state
+              termEls.forEach(b => b.classList.remove('sel'));
+              selected = null;
+              // If all matched, move to next
+              const remainingPairs = unit.cards.length - Object.keys(unit.matched).length;
+              if (remainingPairs <= 0) {
+                finishUnit();
+              } else {
+                stats();
+                updateScore();
+              }
+            } else {
+              score.wrong++;
+              el.mood.src = SAD_IMG;
+              setBox(selected, 0);
+              termEls.forEach(b => b.classList.remove('sel'));
+              selected = null;
+              updateScore();
+            }
+          });
+        });
       }
       function mark(type) {
-        const c = current();
+        const unit = currentUnit();
+        if (!unit || unit.type !== 'single') return; // only for single mode
+        const c = unit.card;
         if (!c) return;
         const b = getBox(c.id);
         let nb = b;
-        let graded = true;
         let answeredCorrectly = (type === "good" && currentIsMatch) || (type === "wrong" && !currentIsMatch);
         if (answeredCorrectly) {
           nb = b + 1;
@@ -370,20 +510,9 @@
         }
         setBox(c.id, nb);
         updateScore();
-        // If completed, remove from queue; else advance
-        if (nb >= BOX_MAX) {
-          queue.splice(cursor, 1);
-          if (cursor >= queue.length) cursor = 0;
-        } else {
-          // Put incorrect answers back soon; correct advances normally
-          if (!answeredCorrectly) {
-            reinsertCurrent(2, 5);
-          } else {
-            cursor = (cursor + 1) % Math.max(1, queue.length);
-          }
-        }
-        prepareViewForCurrent();
-        update();
+        // count this item done for the round, advance
+        roundRemaining = Math.max(0, roundRemaining - 1);
+        finishUnit();
       }
 
       function updateScore() {
@@ -401,10 +530,7 @@
       el.good.addEventListener("click", () => mark("good"));
       el.wrong.addEventListener("click", () => mark("wrong"));
       el.shuffle.addEventListener("click", () => {
-        shuffleQueue();
-        cursor = 0;
-        prepareViewForCurrent();
-        update();
+        buildQueue();
       });
       el.reset.addEventListener("click", () => {
         localStorage.removeItem(LS_KEY);
