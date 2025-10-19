@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flashcards – Medeltiden</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --card: #121922;
+        --muted: #9db2c7;
+        --text: #e6edf3;
+        --accent: #4da3ff;
+        --good: #1db954;
+        --bad: #ff6464;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        background: #0b0f14;
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 18px;
+      }
+      h1 {
+        margin: 0 0 12px 0;
+        font-size: 18px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      select,
+      button {
+        background: #0f1722;
+        border: 1px solid #223247;
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: 10px;
+      }
+      button {
+        cursor: pointer;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid #223247;
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .card.score-card {
+        background: #ffffff;
+        color: #0b0f14;
+        border-color: #e5e7eb;
+      }
+      .cards-row {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+      }
+      @media (max-width: 700px) {
+        .cards-row {
+          flex-direction: column;
+        }
+      }
+      .score-wrap {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        justify-content: space-between;
+      }
+      .score-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .score-right img {
+        width: 96px;
+        height: 96px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        object-fit: contain; /* avoid cropping */
+      }
+      .score-left small {
+        color: #475569;
+      }
+      .pie {
+        width: 96px;
+        height: 96px;
+        display: block;
+      }
+      .pie .bg {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 10;
+      }
+      .pie .fg {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 10;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+      .flash {
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .term {
+        font-size: 26px;
+        font-weight: 800;
+      }
+      .def {
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .btn-accent {
+        background: var(--accent);
+        color: #001428;
+        border-color: #2a7fd6;
+      }
+      .btn-good {
+        background: var(--good);
+        border-color: #169b43;
+      }
+      .btn-bad {
+        background: var(--bad);
+        border-color: #c94b4b;
+      }
+      .progress {
+        height: 8px;
+        background: #0e1520;
+        border: 1px solid #1b2a3c;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+      .progress > div {
+        height: 100%;
+        background: linear-gradient(90deg, var(--good), #49e39f);
+        width: 0%;
+      }
+      small {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Flashcards – Medeltiden</h1>
+      <div class="toolbar">
+        <button id="shuffle">Blanda</button>
+        <button id="reset">Nollställ framsteg</button>
+      </div>
+
+      <div class="cards-row">
+        <div class="card" style="flex:1 1 60%">
+          <div class="flash">
+          <div class="term" id="front">—</div>
+          <div class="def" id="back">—</div>
+          <div class="row">
+            <button id="wrong" class="btn-bad">Fel</button>
+            <button id="good" class="btn-good">Rätt</button>
+          </div>
+          </div>
+        </div>
+        <div class="card score-card" style="flex:1 1 40%">
+          <div class="score-wrap">
+            <div class="score-left">
+              <svg id="accPie" class="pie" viewBox="0 0 80 80" aria-label="Träff">
+                <circle class="bg" cx="40" cy="40" r="34" />
+                <circle class="fg" cx="40" cy="40" r="34" stroke-dasharray="0 213.6" />
+              </svg>
+              <div class="progress" style="width: 160px"><div id="bar"></div></div>
+              <small>Kvar: <span id="left">0</span></small>
+            </div>
+            <div class="score-right">
+              <img id="mood" alt="Humör" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+      // Storage
+      const LS_KEY = "flashcards:progress:v3";
+      const progress = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+      // One correct answer to consider a card cleared in this simple mode
+      const BOX_MAX = 1;
+      function getBox(id) {
+        return progress[id]?.box ?? 0;
+      }
+      function setBox(id, box) {
+        progress[id] = { box: Math.max(0, Math.min(BOX_MAX, box)) };
+        localStorage.setItem(LS_KEY, JSON.stringify(progress));
+      }
+      function idFor(c) {
+        return (c.section + "|" + c.term).toLowerCase();
+      }
+
+      // Build deck
+      let deck = (window.DATA || []).flatMap((s) =>
+        s.cards.map((c) => ({
+          ...c,
+          section: s.section,
+          id: idFor({ ...c, section: s.section }),
+        }))
+      );
+      let filter = "Alla";
+      let queue = [];
+      let cursor = 0;
+      const MIX_CHANCE = 0.4; // chance to show mismatched definition
+      let currentIsMatch = true;
+      let currentDefText = "";
+      const score = { good: 0, wrong: 0 };
+      const HAPPY_IMG = 'happy.png';
+      const SAD_IMG = 'sad.png';
+
+      const $ = (sel) => document.querySelector(sel);
+      const el = {
+        front: $("#front"),
+        back: $("#back"),
+        bar: $("#bar"),
+        left: $("#left"),
+        good: $("#good"),
+        wrong: $("#wrong"),
+        shuffle: $("#shuffle"),
+        reset: $("#reset"),
+        mood: $("#mood"),
+        scoreGood: $("#scoreGood"),
+        scoreWrong: $("#scoreWrong"),
+        scoreAcc: $("#scoreAcc"),
+      };
+
+      // Initial mood image and score
+      el.mood.src = HAPPY_IMG;
+      updateScore();
+
+      function buildQueue() {
+        const all = deck.filter(
+          (c) => (filter === "Alla" || c.section === filter) && getBox(c.id) < BOX_MAX
+        );
+        queue = all.slice();
+        shuffleQueue();
+        cursor = 0;
+        prepareViewForCurrent();
+        update();
+      }
+
+      function shuffleQueue() {
+        for (let i = queue.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [queue[i], queue[j]] = [queue[j], queue[i]];
+        }
+      }
+
+      function current() {
+        return queue[cursor];
+      }
+
+      function update() {
+        const c = current();
+        if (!c) {
+          el.front.textContent = "Inga kort";
+          el.back.textContent = "";
+          // no category shown
+          stats();
+          return;
+        }
+        el.front.textContent = c.term;
+        el.back.textContent = currentDefText || c.definition;
+        stats();
+      }
+
+      function stats() {
+        const all = deck.filter(
+          (c) => filter === "Alla" || c.section === filter
+        );
+        const doneCt = all.filter((c) => getBox(c.id) >= BOX_MAX).length;
+        const tot = all.length;
+        const left = tot - doneCt;
+        if (el.left) el.left.textContent = left;
+        if (el.bar) el.bar.style.width = tot ? Math.round((doneCt / tot) * 100) + "%" : "0%";
+      }
+
+      function next() {
+        // If current was just completed, rebuild to exclude it
+        if (queue.length === 0) {
+          buildQueue();
+          return;
+        }
+        cursor = (cursor + 1) % Math.max(1, queue.length);
+        prepareViewForCurrent();
+        update();
+      }
+      function prepareViewForCurrent() {
+        const c = current();
+        if (!c) {
+          currentIsMatch = true;
+          currentDefText = "";
+          return;
+        }
+        const pool = deck.filter((x) =>
+          (filter === "Alla" || x.section === filter)
+        );
+        const canMismatch = pool.length > 1;
+        const wantMismatch = canMismatch && Math.random() < MIX_CHANCE;
+        if (wantMismatch) {
+          let other;
+          do {
+            other = pool[Math.floor(Math.random() * pool.length)];
+          } while (other.id === c.id && pool.length > 1);
+          currentIsMatch = other.id === c.id; // if failed to find other when only one card
+          currentDefText = other.definition;
+        } else {
+          currentIsMatch = true;
+          currentDefText = c.definition;
+        }
+      }
+      function reinsertCurrent(minAhead = 2, maxAhead = 5) {
+        if (queue.length <= 1) return;
+        const [card] = queue.splice(cursor, 1);
+        const offset = Math.floor(Math.random() * (maxAhead - minAhead + 1)) + minAhead;
+        const newIndex = Math.min(queue.length, cursor + offset);
+        queue.splice(newIndex, 0, card);
+        if (cursor >= queue.length) cursor = 0;
+      }
+      function mark(type) {
+        const c = current();
+        if (!c) return;
+        const b = getBox(c.id);
+        let nb = b;
+        let graded = true;
+        let answeredCorrectly = (type === "good" && currentIsMatch) || (type === "wrong" && !currentIsMatch);
+        if (answeredCorrectly) {
+          nb = b + 1;
+          score.good++;
+          el.mood.src = HAPPY_IMG;
+        } else {
+          nb = 0;
+          score.wrong++;
+          el.mood.src = SAD_IMG;
+        }
+        setBox(c.id, nb);
+        updateScore();
+        // If completed, remove from queue; else advance
+        if (nb >= BOX_MAX) {
+          queue.splice(cursor, 1);
+          if (cursor >= queue.length) cursor = 0;
+        } else {
+          // Put incorrect answers back soon; correct advances normally
+          if (!answeredCorrectly) {
+            reinsertCurrent(2, 5);
+          } else {
+            cursor = (cursor + 1) % Math.max(1, queue.length);
+          }
+        }
+        prepareViewForCurrent();
+        update();
+      }
+
+      function updateScore() {
+        const attempts = score.good + score.wrong; // graded attempts
+        const acc = attempts ? score.good / attempts : 1; // start at 100%
+        // Update pie chart stroke-dasharray based on circumference of r=34 -> ~213.6
+        const r = 34;
+        const len = 2 * Math.PI * r;
+        const dash = Math.max(0, Math.min(len, len * acc));
+        const gap = Math.max(0, len - dash);
+        const pie = document.querySelector('#accPie .fg');
+        if (pie) pie.setAttribute('stroke-dasharray', `${dash} ${gap}`);
+      }
+
+      el.good.addEventListener("click", () => mark("good"));
+      el.wrong.addEventListener("click", () => mark("wrong"));
+      el.shuffle.addEventListener("click", () => {
+        shuffleQueue();
+        cursor = 0;
+        prepareViewForCurrent();
+        update();
+      });
+      el.reset.addEventListener("click", () => {
+        localStorage.removeItem(LS_KEY);
+        Object.keys(progress).forEach((k) => delete progress[k]);
+        score.good = 0; score.wrong = 0;
+        el.mood.src = HAPPY_IMG;
+        updateScore();
+        buildQueue();
+      });
+
+      // No keyboard listeners for mobile-focused interaction.
+
+      buildQueue();
+    </script>
+  </body>
+</html>
