@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Flashcards – Medeltiden</title>
+    <title>Flashcards</title>
     <style>
       :root {
         --bg: #0b0f14;
@@ -27,15 +27,15 @@
           "Helvetica Neue", Arial, "Noto Sans", sans-serif;
         background: #0b0f14;
         color: var(--text);
-        overflow-x: hidden; /* ban horizontal scroll */
-        overflow-y: auto; /* allow vertical scroll */
+        overflow-x: hidden;
+        overflow-y: auto;
         overscroll-behavior-y: contain;
       }
       .wrap {
         max-width: 900px;
         margin: 0 auto;
         padding: 18px;
-        min-height: 100dvh; /* allow content to grow for vertical scroll */
+        min-height: 100dvh;
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -123,7 +123,7 @@
         border-radius: 12px;
         border: 1px solid #e5e7eb;
         background: #fff;
-        object-fit: contain; /* avoid cropping */
+        object-fit: contain;
       }
       .score-left small {
         color: #475569;
@@ -157,7 +157,8 @@
         flex: 1 1 auto;
         min-width: 0;
       }
-      .flash.matching {
+      .flash.matching,
+      .flash.mc {
         align-items: stretch;
         justify-content: flex-start;
       }
@@ -177,7 +178,8 @@
         align-self: stretch;
         max-height: 100%;
       }
-      .flash.matching .match {
+      .flash.matching .match,
+      .flash.mc .mc {
         overflow: auto;
       }
       .match .cols {
@@ -216,7 +218,16 @@
         border-color: #1f7a43;
         color: #b7ffd3;
       }
-      #match:not(.hidden) ~ #controls {
+      .chip.bad {
+        background: #3a1414;
+        border-color: #8a2c2c;
+        color: #ffc8c8;
+      }
+      #match:not(.hidden) ~ #controls,
+      #mc:not(.hidden) ~ #controls,
+      #cat:not(.hidden) ~ #controls,
+      #odd:not(.hidden) ~ #controls,
+      #multi:not(.hidden) ~ #controls {
         display: none !important;
       }
       .row {
@@ -254,57 +265,240 @@
       small {
         color: var(--muted);
       }
+      .select-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+        margin-top: 8px;
+      }
+      .select-list .btn-accent {
+        font-size: 16px;
+        padding: 14px;
+        text-align: left;
+      }
+      .question {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+      .results {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        flex: 1 1 auto;
+      }
+      .results.hidden {
+        display: none;
+      }
+      .chip.bad {
+        animation: shake 0.3s;
+      }
+      .chip.missed {
+        background: #3a3214;
+        border-color: #8a722c;
+        color: #ffe7c8;
+      }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+      .flash.cat,
+      .flash.odd,
+      .flash.multi {
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+      .cat-box,
+      .odd-box,
+      .multi-box {
+        width: 100%;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .cat-box.hidden,
+      .odd-box.hidden,
+      .multi-box.hidden {
+        display: none;
+      }
+      .cat-items,
+      .odd-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+      .cat-items .chip,
+      .odd-items .chip {
+        width: auto;
+        flex: 0 1 auto;
+        max-width: 100%;
+        padding: 10px 14px;
+        font-size: 15px;
+      }
+      .cat-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+      .cat-col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        border: 1px dashed #2a3d57;
+        border-radius: 12px;
+        padding: 8px;
+        min-height: 80px;
+        cursor: pointer;
+      }
+      .cat-col-title {
+        font-weight: 700;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .cat-col.sel {
+        border-style: solid;
+        box-shadow: 0 0 0 2px var(--accent);
+      }
+      .cat-col-body {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .cat-col-body .chip {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      @media (max-width: 700px) {
+        .cat-cols {
+          grid-template-columns: 1fr;
+        }
+      }
+      .multi-actions {
+        display: flex;
+        justify-content: center;
+      }
+      .results h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+      .results .big {
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--accent);
+      }
+      .results .pct {
+        font-size: 16px;
+        color: var(--muted);
+      }
+      .results .msg {
+        font-size: 15px;
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <h1>Flashcards – Medeltiden</h1>
-      <div class="toolbar">
-        <button id="newRound">Ny omgång</button>
+      <h1 id="title">Flashcards</h1>
+
+      <div class="card" id="select">
+        <h2 style="margin: 0 0 6px 0; font-size: 18px">Välj spel</h2>
+        <small>Vilket område vill du öva på?</small>
+        <div class="select-list" id="selectList"></div>
       </div>
 
-      <div class="cards-row">
-        <div class="card" id="qcard" style="flex: 1 1 60%">
-          <div class="flash" id="flash">
-            <div class="term" id="front">—</div>
-            <div class="def" id="back">—</div>
-            <div id="match" class="match hidden">
-              <div class="cols">
-                <div class="col" id="matchTerms"></div>
-                <div class="col" id="matchDefs"></div>
+      <div id="game" class="hidden">
+        <div class="toolbar">
+          <button id="newRound">Ny omgång</button>
+          <button id="changeGame">Byt spel</button>
+        </div>
+
+        <div class="cards-row">
+          <div class="card" id="qcard" style="flex: 1 1 60%">
+            <div class="flash" id="flash">
+              <div class="term" id="front">—</div>
+              <div class="def" id="back">—</div>
+              <div id="match" class="match hidden">
+                <div class="cols">
+                  <div class="col" id="matchTerms"></div>
+                  <div class="col" id="matchDefs"></div>
+                </div>
               </div>
-            </div>
-            <div class="row" id="controls">
-              <button id="wrong" class="btn-bad">Fel</button>
-              <button id="good" class="btn-good">Rätt</button>
+              <div id="mc" class="match hidden">
+                <div class="col" id="mcOptions"></div>
+              </div>
+              <div id="cat" class="cat-box hidden">
+                <div class="question" id="catQuestion"></div>
+                <div class="cat-items" id="catItems"></div>
+                <div class="cat-cols" id="catCols"></div>
+              </div>
+              <div id="odd" class="odd-box hidden">
+                <div class="question">Vilken hör inte hemma?</div>
+                <div class="odd-items" id="oddItems"></div>
+              </div>
+              <div id="multi" class="multi-box hidden">
+                <div class="question" id="multiQuestion"></div>
+                <div class="col" id="multiOptions"></div>
+                <div class="multi-actions">
+                  <button id="multiSubmit" class="btn-accent">Klar</button>
+                </div>
+              </div>
+              <div id="results" class="results hidden">
+                <h2 id="resHeadline">Klart!</h2>
+                <div class="big">
+                  <span id="resCorrect">0</span> / <span id="resTotal">0</span>
+                </div>
+                <small>frågor rätt på första försöket</small>
+                <div class="pct">
+                  <span id="resAcc">0</span>% träffsäkerhet (<span
+                    id="resGood"
+                    >0</span
+                  >
+                  rätt på <span id="resAttempts">0</span> svar)
+                </div>
+                <div class="msg" id="resMessage"></div>
+              </div>
+              <div class="row" id="controls">
+                <button id="wrong" class="btn-bad">Fel</button>
+                <button id="good" class="btn-good">Rätt</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card score-card" style="flex: 1 1 40%">
-          <div class="score-wrap">
-            <div class="score-left">
-              <svg
-                id="accPie"
-                class="pie"
-                viewBox="0 0 80 80"
-                aria-label="Träff"
-              >
-                <circle class="bg" cx="40" cy="40" r="34" />
-                <circle
-                  class="fg"
-                  cx="40"
-                  cy="40"
-                  r="34"
-                  stroke-dasharray="0 213.6"
-                />
-              </svg>
-              <div class="progress" style="width: 160px">
-                <div id="bar"></div>
+          <div class="card score-card" style="flex: 1 1 40%">
+            <div class="score-wrap">
+              <div class="score-left">
+                <svg
+                  id="accPie"
+                  class="pie"
+                  viewBox="0 0 80 80"
+                  aria-label="Träff"
+                >
+                  <circle class="bg" cx="40" cy="40" r="34" />
+                  <circle
+                    class="fg"
+                    cx="40"
+                    cy="40"
+                    r="34"
+                    stroke-dasharray="0 213.6"
+                  />
+                </svg>
+                <div class="progress" style="width: 160px">
+                  <div id="bar"></div>
+                </div>
+                <small>Kvar: <span id="left">0</span></small>
               </div>
-              <small>Kvar: <span id="left">0</span></small>
-            </div>
-            <div class="score-right">
-              <img id="mood" alt="Humör" />
+              <div class="score-right">
+                <img id="mood" alt="Humör" />
+              </div>
             </div>
           </div>
         </div>
@@ -313,49 +507,54 @@
 
     <script src="data.js"></script>
     <script>
-      // Storage
-      const LS_KEY = "flashcards:progress:v3";
-      const progress = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
-      // One correct answer to consider a card cleared in this simple mode
+      const GAMES = window.GAMES || {};
+      const LS_KEY_PREFIX = "flashcards:progress:v3:";
+      const LS_LAST_GAME = "flashcards:lastGame";
+
+      let currentGame = null;
+      let progress = {};
       const BOX_MAX = 1;
+      function lsKey() {
+        return LS_KEY_PREFIX + currentGame;
+      }
       function getBox(id) {
         return progress[id]?.box ?? 0;
       }
       function setBox(id, box) {
         progress[id] = { box: Math.max(0, Math.min(BOX_MAX, box)) };
-        localStorage.setItem(LS_KEY, JSON.stringify(progress));
+        localStorage.setItem(lsKey(), JSON.stringify(progress));
       }
       function idFor(c) {
         return (c.section + "|" + c.term).toLowerCase();
       }
 
-      // Build deck
-      let deck = (window.DATA || []).flatMap((s) =>
-        s.cards.map((c) => ({
-          ...c,
-          section: s.section,
-          id: idFor({ ...c, section: s.section }),
-        }))
-      );
-      // True/false questions, loaded from qna.json
+      let deck = [];
       let tfDeck = [];
-      let filter = "Alla";
-      let queue = []; // sequence of units: {type:'single', card} or {type:'match', cards:[], matched:Set}
+      let mcDeck = [];
+      let catDeck = [];
+      let oddDeck = [];
+      let multiDeck = [];
+      let queue = [];
       let cursor = 0;
-      const MIX_CHANCE = 0.5; // chance to show mismatched definition
+      const MIX_CHANCE = 0.5;
       let currentIsMatch = true;
       let currentDefText = "";
       const score = { good: 0, wrong: 0 };
+      let roundCorrect = 0; // items answered correctly on first try
       const GROUP_SIZE = 3;
-      const GROUP_PROB = 0.3; // likelihood a unit is a 3-match group if possible
-      const MAX_ROUND_ITEMS = 25; // target items per round
-      let roundRemaining = 0; // items left in current round (singles count as 1, match counts unresolved pairs)
-      let roundTotal = 0; // total items in the current round
+      const GROUP_PROB = 0.3;
+      const MAX_ROUND_ITEMS = 25;
+      let roundRemaining = 0;
+      let roundTotal = 0;
       const HAPPY_IMG = "happy.png";
       const SAD_IMG = "sad.png";
 
       const $ = (sel) => document.querySelector(sel);
       const el = {
+        title: $("#title"),
+        select: $("#select"),
+        selectList: $("#selectList"),
+        game: $("#game"),
         front: $("#front"),
         back: $("#back"),
         qcard: $("#qcard"),
@@ -365,35 +564,120 @@
         good: $("#good"),
         wrong: $("#wrong"),
         newRound: $("#newRound"),
+        changeGame: $("#changeGame"),
         mood: $("#mood"),
-        scoreGood: $("#scoreGood"),
-        scoreWrong: $("#scoreWrong"),
-        scoreAcc: $("#scoreAcc"),
         match: $("#match"),
         matchTerms: $("#matchTerms"),
         matchDefs: $("#matchDefs"),
+        mc: $("#mc"),
+        mcOptions: $("#mcOptions"),
+        cat: $("#cat"),
+        catQuestion: $("#catQuestion"),
+        catItems: $("#catItems"),
+        catCols: $("#catCols"),
+        odd: $("#odd"),
+        oddItems: $("#oddItems"),
+        multi: $("#multi"),
+        multiQuestion: $("#multiQuestion"),
+        multiOptions: $("#multiOptions"),
+        multiSubmit: $("#multiSubmit"),
         controls: $("#controls"),
+        results: $("#results"),
+        resHeadline: $("#resHeadline"),
+        resCorrect: $("#resCorrect"),
+        resTotal: $("#resTotal"),
+        resGood: $("#resGood"),
+        resAttempts: $("#resAttempts"),
+        resAcc: $("#resAcc"),
+        resMessage: $("#resMessage"),
       };
 
-      // Load true/false questions and then initialize queue
-      fetch("qna.json")
-        .then((r) => r.json())
-        .then((arr) => {
-          tfDeck = (arr || []).map((x, i) => ({
-            id: ("tf|" + x.q).toLowerCase(),
-            question: x.q,
-            answerTrue:
-              String(x.a || "")
-                .trim()
-                .toLowerCase() === "rätt",
-          }));
-          buildQueue2();
-        })
-        .catch(() => {});
+      function renderGameSelect() {
+        el.selectList.innerHTML = Object.entries(GAMES)
+          .map(
+            ([key, g]) =>
+              `<button class="btn-accent" data-game="${key}">${g.title}</button>`
+          )
+          .join("");
+        el.selectList.querySelectorAll("button[data-game]").forEach((b) => {
+          b.addEventListener("click", () => selectGame(b.dataset.game));
+        });
+      }
 
-      // Initial mood image and score
-      el.mood.src = HAPPY_IMG;
-      updateScore();
+      function showSelect() {
+        currentGame = null;
+        el.select.classList.remove("hidden");
+        el.game.classList.add("hidden");
+        el.title.textContent = "Flashcards";
+      }
+
+      async function selectGame(name) {
+        const g = GAMES[name];
+        if (!g) return;
+        currentGame = name;
+        localStorage.setItem(LS_LAST_GAME, name);
+        progress = JSON.parse(localStorage.getItem(lsKey()) || "{}");
+        el.title.textContent = "Flashcards – " + g.title;
+        deck = g.sections.flatMap((s) =>
+          s.cards.map((c) => ({
+            ...c,
+            section: s.section,
+            id: idFor({ ...c, section: s.section }),
+          }))
+        );
+        const [tf, mc, cat, odd, multi] = await Promise.all([
+          loadJson(g.files.tf),
+          loadJson(g.files.mc),
+          loadJson(g.files.cat),
+          loadJson(g.files.odd),
+          loadJson(g.files.multi),
+        ]);
+        tfDeck = (tf || []).map((x) => ({
+          id: ("tf|" + x.q).toLowerCase(),
+          question: x.q,
+          answerTrue:
+            String(x.a || "")
+              .trim()
+              .toLowerCase() === "rätt",
+        }));
+        mcDeck = (mc || []).map((x) => ({
+          id: ("mc|" + x.q).toLowerCase(),
+          question: x.q,
+          options: x.options,
+          correct: x.correct,
+        }));
+        catDeck = (cat || []).map((x) => ({
+          id: ("cat|" + x.q).toLowerCase(),
+          question: x.q,
+          categories: x.categories,
+          items: x.items,
+        }));
+        oddDeck = (odd || []).map((x) => ({
+          id: ("odd|" + x.items.join("/")).toLowerCase(),
+          items: x.items,
+          outlier: x.outlier,
+        }));
+        multiDeck = (multi || []).map((x) => ({
+          id: ("multi|" + x.q).toLowerCase(),
+          question: x.q,
+          options: x.options,
+          correct: x.correct,
+        }));
+        score.good = 0;
+        score.wrong = 0;
+        el.mood.src = HAPPY_IMG;
+        updateScore();
+        el.select.classList.add("hidden");
+        el.game.classList.remove("hidden");
+        buildQueue();
+      }
+
+      function loadJson(path) {
+        if (!path) return Promise.resolve(null);
+        return fetch(path)
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null);
+      }
 
       function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
@@ -404,62 +688,33 @@
       }
 
       function buildQueue() {
-        const conceptAll = deck.filter(
-          (c) =>
-            (filter === "Alla" || c.section === filter) &&
-            getBox(c.id) < BOX_MAX
+        const cPool = shuffleArray(
+          deck.filter((c) => getBox(c.id) < BOX_MAX).slice()
         );
-        const tfAll = tfDeck.filter((t) => getBox(t.id) < BOX_MAX);
-        const cPool = shuffleArray(conceptAll.slice());
-        const tfPool = shuffleArray(tfAll.slice());
-        queue = [];
-        roundRemaining = 0;
-        while (cPool.length || tfPool.length) {
-          if (cPool.length >= GROUP_SIZE && Math.random() < GROUP_PROB) {
-            const size = Math.min(GROUP_SIZE, cPool.length);
-            const group = cPool.splice(0, size);
-            queue.push({ type: "match", cards: group, matched: {} });
-            roundRemaining += group.length;
-          } else {
-            if (tfPool.length && (!cPool.length || Math.random() < 0.5)) {
-              const q = tfPool.shift();
-              queue.push({ type: "tf", q });
-              roundRemaining += 1;
-            } else if (cPool.length) {
-              const card = cPool.shift();
-              queue.push({ type: "single", card });
-              roundRemaining += 1;
-            }
-          }
-        }
-        cursor = 0;
-        roundTotal = roundRemaining;
-        prepareViewForCurrent();
-        update();
-      }
-
-      function shuffleQueue() {
-        shuffleArray(queue);
-      }
-
-      function currentUnit() {
-        return queue[cursor];
-      }
-
-      // New queue builder limiting rounds to MAX_ROUND_ITEMS and mixing TF
-      function buildQueue2() {
-        const conceptAll = deck.filter(
-          (c) =>
-            (filter === "Alla" || c.section === filter) &&
-            getBox(c.id) < BOX_MAX
+        const tfPool = shuffleArray(
+          tfDeck.filter((t) => getBox(t.id) < BOX_MAX).slice()
         );
-        const tfAll = tfDeck.filter((t) => getBox(t.id) < BOX_MAX);
-        const cPool = shuffleArray(conceptAll.slice());
-        const tfPool = shuffleArray(tfAll.slice());
+        const mcPool = shuffleArray(
+          mcDeck.filter((m) => getBox(m.id) < BOX_MAX).slice()
+        );
+        const catPool = shuffleArray(
+          catDeck.filter((c) => getBox(c.id) < BOX_MAX).slice()
+        );
+        const oddPool = shuffleArray(
+          oddDeck.filter((o) => getBox(o.id) < BOX_MAX).slice()
+        );
+        const multiPool = shuffleArray(
+          multiDeck.filter((m) => getBox(m.id) < BOX_MAX).slice()
+        );
         queue = [];
         roundRemaining = 0;
         while (
-          (cPool.length || tfPool.length) &&
+          (cPool.length ||
+            tfPool.length ||
+            mcPool.length ||
+            catPool.length ||
+            oddPool.length ||
+            multiPool.length) &&
           roundRemaining < MAX_ROUND_ITEMS
         ) {
           if (
@@ -475,60 +730,158 @@
             const group = cPool.splice(0, size);
             queue.push({ type: "match", cards: group, matched: {} });
             roundRemaining += group.length;
-          } else {
-            if (tfPool.length && (!cPool.length || Math.random() < 0.5)) {
-              const q = tfPool.shift();
-              queue.push({ type: "tf", q });
-              roundRemaining += 1;
-            } else if (cPool.length) {
-              const card = cPool.shift();
-              queue.push({ type: "single", card });
-              roundRemaining += 1;
-            } else {
+            continue;
+          }
+          // Pick a non-match unit type weighted so the rarer types show up often
+          const choices = [];
+          if (cPool.length) choices.push({ t: "single", w: 1 });
+          if (tfPool.length) choices.push({ t: "tf", w: 2 });
+          if (mcPool.length) choices.push({ t: "mc", w: 2 });
+          if (catPool.length) choices.push({ t: "cat", w: 3 });
+          if (oddPool.length) choices.push({ t: "odd", w: 3 });
+          if (multiPool.length) choices.push({ t: "multi", w: 3 });
+          if (!choices.length) break;
+          const totalW = choices.reduce((a, c) => a + c.w, 0);
+          let r = Math.random() * totalW;
+          let pick = choices[choices.length - 1].t;
+          for (const c of choices) {
+            r -= c.w;
+            if (r <= 0) {
+              pick = c.t;
               break;
             }
           }
+          if (pick === "single") {
+            queue.push({ type: "single", card: cPool.shift() });
+          } else if (pick === "tf") {
+            queue.push({ type: "tf", q: tfPool.shift() });
+          } else if (pick === "mc") {
+            queue.push({ type: "mc", q: mcPool.shift() });
+          } else if (pick === "cat") {
+            queue.push({ type: "cat", q: catPool.shift() });
+          } else if (pick === "odd") {
+            queue.push({ type: "odd", q: oddPool.shift() });
+          } else {
+            queue.push({ type: "multi", q: multiPool.shift() });
+          }
+          roundRemaining += 1;
         }
         cursor = 0;
         roundTotal = roundRemaining;
+        roundCorrect = 0;
         prepareViewForCurrent();
         update();
+      }
+
+      function currentUnit() {
+        return queue[cursor];
       }
 
       function update() {
         const unit = currentUnit();
         if (!unit) {
-          if (el.qcard) el.qcard.style.display = "none";
+          showResults();
           stats();
           return;
         }
         if (el.qcard) el.qcard.style.display = "";
+        // Reset visibility classes
+        el.flash.classList.remove("matching", "mc", "cat", "odd", "multi");
+        el.match.classList.add("hidden");
+        el.mc.classList.add("hidden");
+        el.cat.classList.add("hidden");
+        el.odd.classList.add("hidden");
+        el.multi.classList.add("hidden");
+        el.results.classList.add("hidden");
+        el.controls.classList.remove("hidden");
+        el.front.classList.remove("hidden");
+        el.back.classList.remove("hidden");
+
         if (unit.type === "single") {
-          el.flash.classList.remove("matching");
-          el.match.classList.add("hidden");
-          el.controls.classList.remove("hidden");
-          el.front.classList.remove("hidden");
-          el.back.classList.remove("hidden");
-          // 'prepareViewForCurrent' already set currentDefText/currentIsMatch
           el.front.textContent = unit.card.term;
           el.back.textContent = currentDefText || unit.card.definition;
         } else if (unit.type === "tf") {
-          el.flash.classList.remove("matching");
-          el.match.classList.add("hidden");
-          el.controls.classList.remove("hidden");
-          el.front.classList.remove("hidden");
-          el.back.classList.remove("hidden");
           el.front.textContent = unit.q.question;
           el.back.textContent = "Rätt eller fel?";
         } else if (unit.type === "match") {
           el.flash.classList.add("matching");
-          el.controls.classList.add("hidden");
           el.front.classList.add("hidden");
           el.back.classList.add("hidden");
           el.match.classList.remove("hidden");
           renderMatch(unit);
+        } else if (unit.type === "mc") {
+          el.flash.classList.add("mc");
+          el.front.textContent = unit.q.question;
+          el.back.classList.add("hidden");
+          el.mc.classList.remove("hidden");
+          renderMc(unit);
+        } else if (unit.type === "cat") {
+          el.flash.classList.add("cat");
+          el.front.classList.add("hidden");
+          el.back.classList.add("hidden");
+          el.cat.classList.remove("hidden");
+          renderCat(unit);
+        } else if (unit.type === "odd") {
+          el.flash.classList.add("odd");
+          el.front.classList.add("hidden");
+          el.back.classList.add("hidden");
+          el.odd.classList.remove("hidden");
+          renderOdd(unit);
+        } else if (unit.type === "multi") {
+          el.flash.classList.add("multi");
+          el.front.classList.add("hidden");
+          el.back.classList.add("hidden");
+          el.multi.classList.remove("hidden");
+          renderMulti(unit);
         }
         stats();
+      }
+
+      function showResults() {
+        if (el.qcard) el.qcard.style.display = "";
+        el.flash.classList.remove("matching", "mc", "cat", "odd", "multi");
+        el.front.classList.add("hidden");
+        el.back.classList.add("hidden");
+        el.match.classList.add("hidden");
+        el.mc.classList.add("hidden");
+        el.cat.classList.add("hidden");
+        el.odd.classList.add("hidden");
+        el.multi.classList.add("hidden");
+        el.controls.classList.add("hidden");
+        el.results.classList.remove("hidden");
+        const attempts = score.good + score.wrong;
+        const acc = attempts ? Math.round((score.good / attempts) * 100) : 0;
+        const firstTryPct = roundTotal
+          ? Math.round((roundCorrect / roundTotal) * 100)
+          : 0;
+        el.resCorrect.textContent = roundCorrect;
+        el.resTotal.textContent = roundTotal;
+        el.resGood.textContent = score.good;
+        el.resAttempts.textContent = attempts;
+        el.resAcc.textContent = acc;
+        let headline, msg;
+        if (firstTryPct === 100) {
+          headline = "Perfekt!";
+          msg = "Alla rätt på första försöket — sjukt bra jobbat!";
+        } else if (firstTryPct >= 90) {
+          headline = "Toppen!";
+          msg = "Riktigt vass koll på det här.";
+        } else if (firstTryPct >= 75) {
+          headline = "Bra jobbat!";
+          msg = "Mycket sitter — finputsa det som inte gör det.";
+        } else if (firstTryPct >= 50) {
+          headline = "Bra försök!";
+          msg = "Halvvägs där. Kör en omgång till.";
+        } else if (firstTryPct > 0) {
+          headline = "Fortsätt öva!";
+          msg = "Det här är klurigt — det kommer.";
+        } else {
+          headline = "Hmm…";
+          msg = "Dags att öppna boken? Kör en till och se.";
+        }
+        el.resHeadline.textContent = headline;
+        el.resMessage.textContent = msg;
+        el.mood.src = firstTryPct >= 50 ? HAPPY_IMG : SAD_IMG;
       }
 
       function stats() {
@@ -539,7 +892,6 @@
       }
 
       function finishUnit() {
-        // remove current unit and move on; if none left, do not auto-start a new round
         if (queue.length === 0) {
           update();
           return;
@@ -549,6 +901,7 @@
         prepareViewForCurrent();
         update();
       }
+
       function prepareViewForCurrent() {
         const unit = currentUnit();
         if (!unit) {
@@ -557,9 +910,7 @@
           return;
         }
         if (unit.type === "single") {
-          const pool = deck.filter(
-            (x) => filter === "Alla" || x.section === filter
-          );
+          const pool = deck;
           const canMismatch = pool.length > 1;
           const wantMismatch = canMismatch && Math.random() < MIX_CHANCE;
           if (wantMismatch) {
@@ -567,28 +918,25 @@
             do {
               other = pool[Math.floor(Math.random() * pool.length)];
             } while (other.id === unit.card.id && pool.length > 1);
-            currentIsMatch = other.id === unit.card.id; // if failed to find other when only one card
+            currentIsMatch = other.id === unit.card.id;
             currentDefText = other.definition;
           } else {
             currentIsMatch = true;
             currentDefText = unit.card.definition;
           }
-        } else if (unit.type === "tf") {
-          // no mixing
+        } else {
           currentIsMatch = null;
           currentDefText = "";
         }
       }
 
       function renderMatch(unit) {
-        // Build term buttons
         el.matchTerms.innerHTML = unit.cards
           .map(
             (c) =>
               `<button class="chip term" data-id="${c.id}">${c.term}</button>`
           )
           .join("");
-        // Build definition buttons (shuffled)
         const defs = unit.cards.map((c) => ({ id: c.id, t: c.definition }));
         shuffleArray(defs);
         el.matchDefs.innerHTML = defs
@@ -597,6 +945,7 @@
           )
           .join("");
         let selected = null;
+        const blemished = new Set(); // pair ids that had a wrong attempt
         const termEls = Array.from(el.matchTerms.querySelectorAll(".term"));
         const defEls = Array.from(el.matchDefs.querySelectorAll(".def"));
         const markMatched = (id) => {
@@ -624,17 +973,15 @@
             if (!selected || btn.disabled) return;
             const correct = btn.dataset.id === selected;
             if (correct) {
-              // score and progress
               score.good++;
+              if (!blemished.has(selected)) roundCorrect++;
               el.mood.src = HAPPY_IMG;
               setBox(selected, 1);
               unit.matched[selected] = true;
               roundRemaining = Math.max(0, roundRemaining - 1);
               markMatched(selected);
-              // clear selection state
               termEls.forEach((b) => b.classList.remove("sel"));
               selected = null;
-              // If all matched, move to next
               const remainingPairs =
                 unit.cards.length - Object.keys(unit.matched).length;
               if (remainingPairs <= 0) {
@@ -645,6 +992,7 @@
               }
             } else {
               score.wrong++;
+              blemished.add(selected);
               el.mood.src = SAD_IMG;
               setBox(selected, 0);
               termEls.forEach((b) => b.classList.remove("sel"));
@@ -654,15 +1002,248 @@
           });
         });
       }
+
+      function renderMc(unit) {
+        const opts = unit.q.options.map((o) => ({ t: o })).slice();
+        shuffleArray(opts);
+        el.mcOptions.innerHTML = opts
+          .map((o) => `<button class="chip">${o.t}</button>`)
+          .join("");
+        const btns = Array.from(el.mcOptions.querySelectorAll(".chip"));
+        btns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (btn.disabled) return;
+            btns.forEach((b) => (b.disabled = true));
+            const correct = btn.textContent === unit.q.correct;
+            if (correct) {
+              btn.classList.add("ok");
+              score.good++;
+              roundCorrect++;
+              el.mood.src = HAPPY_IMG;
+              setBox(unit.q.id, 1);
+            } else {
+              btn.classList.add("bad");
+              const right = btns.find(
+                (b) => b.textContent === unit.q.correct
+              );
+              if (right) right.classList.add("ok");
+              score.wrong++;
+              el.mood.src = SAD_IMG;
+              setBox(unit.q.id, 0);
+            }
+            roundRemaining = Math.max(0, roundRemaining - 1);
+            updateScore();
+            const delay = correct ? 600 : 1300;
+            setTimeout(finishUnit, delay);
+          });
+        });
+      }
+
+      function renderCat(unit) {
+        const q = unit.q;
+        el.catQuestion.textContent = q.q;
+        const remaining = q.items.map((it, i) => ({
+          idx: i,
+          text: it.text,
+          category: it.category,
+        }));
+        shuffleArray(remaining);
+        const placedCount = { total: 0 };
+        const blemished = new Set();
+        let selectedItem = null;
+
+        const renderItems = () => {
+          el.catItems.innerHTML = remaining
+            .map(
+              (it) =>
+                `<button class="chip" data-idx="${it.idx}">${it.text}</button>`
+            )
+            .join("");
+          el.catItems.querySelectorAll(".chip").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              if (btn.disabled) return;
+              el.catItems
+                .querySelectorAll(".chip")
+                .forEach((b) => b.classList.remove("sel"));
+              const idx = Number(btn.dataset.idx);
+              selectedItem = remaining.find((r) => r.idx === idx) || null;
+              btn.classList.add("sel");
+            });
+          });
+        };
+
+        el.catCols.innerHTML = q.categories
+          .map(
+            (c) =>
+              `<div class="cat-col" data-cat="${c}">
+                 <div class="cat-col-title">${c}</div>
+                 <div class="cat-col-body"></div>
+               </div>`
+          )
+          .join("");
+        const colEls = Array.from(el.catCols.querySelectorAll(".cat-col"));
+        colEls.forEach((col) => {
+          col.addEventListener("click", () => {
+            if (!selectedItem) return;
+            const target = col.dataset.cat;
+            const isCorrect = target === selectedItem.category;
+            if (isCorrect) {
+              const body = col.querySelector(".cat-col-body");
+              const placedChip = document.createElement("button");
+              placedChip.className = "chip ok";
+              placedChip.textContent = selectedItem.text;
+              placedChip.disabled = true;
+              body.appendChild(placedChip);
+              const idxToRemove = selectedItem.idx;
+              const arrIdx = remaining.findIndex((r) => r.idx === idxToRemove);
+              if (arrIdx >= 0) remaining.splice(arrIdx, 1);
+              if (!blemished.has(idxToRemove)) {
+                // first-try correct contribution counted at unit completion
+              }
+              selectedItem = null;
+              renderItems();
+              placedCount.total++;
+              score.good++;
+              el.mood.src = HAPPY_IMG;
+              updateScore();
+              if (placedCount.total === q.items.length) {
+                if (blemished.size === 0) roundCorrect++;
+                setBox(q.id, 1);
+                roundRemaining = Math.max(0, roundRemaining - 1);
+                stats();
+                finishUnit();
+              }
+            } else {
+              blemished.add(selectedItem.idx);
+              col.classList.add("bad");
+              setTimeout(() => col.classList.remove("bad"), 350);
+              const itemBtn = el.catItems.querySelector(
+                `[data-idx="${selectedItem.idx}"]`
+              );
+              if (itemBtn) {
+                itemBtn.classList.add("bad");
+                setTimeout(() => itemBtn.classList.remove("bad"), 350);
+              }
+              score.wrong++;
+              el.mood.src = SAD_IMG;
+              setBox(q.id, 0);
+              updateScore();
+            }
+          });
+        });
+
+        renderItems();
+      }
+
+      function renderOdd(unit) {
+        const q = unit.q;
+        const items = q.items.slice();
+        shuffleArray(items);
+        el.oddItems.innerHTML = items
+          .map((t) => `<button class="chip">${t}</button>`)
+          .join("");
+        const btns = Array.from(el.oddItems.querySelectorAll(".chip"));
+        btns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (btn.disabled) return;
+            btns.forEach((b) => (b.disabled = true));
+            const correct = btn.textContent === q.outlier;
+            if (correct) {
+              btn.classList.add("ok");
+              score.good++;
+              roundCorrect++;
+              el.mood.src = HAPPY_IMG;
+              setBox(q.id, 1);
+            } else {
+              btn.classList.add("bad");
+              const right = btns.find((b) => b.textContent === q.outlier);
+              if (right) right.classList.add("ok");
+              score.wrong++;
+              el.mood.src = SAD_IMG;
+              setBox(q.id, 0);
+            }
+            roundRemaining = Math.max(0, roundRemaining - 1);
+            updateScore();
+            setTimeout(finishUnit, correct ? 600 : 1300);
+          });
+        });
+      }
+
+      function renderMulti(unit) {
+        const q = unit.q;
+        el.multiQuestion.textContent = q.question;
+        const opts = q.options.slice();
+        shuffleArray(opts);
+        el.multiOptions.innerHTML = opts
+          .map((t) => `<button class="chip">${t}</button>`)
+          .join("");
+        const btns = Array.from(el.multiOptions.querySelectorAll(".chip"));
+        btns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (btn.disabled) return;
+            btn.classList.toggle("sel");
+          });
+        });
+        el.multiSubmit.disabled = false;
+        if (el.multiSubmit._onSubmit) {
+          el.multiSubmit.removeEventListener("click", el.multiSubmit._onSubmit);
+        }
+        const onSubmit = () => {
+          el.multiSubmit.removeEventListener("click", onSubmit);
+          el.multiSubmit._onSubmit = null;
+          el.multiSubmit.disabled = true;
+          const correctSet = new Set(q.correct);
+          let allRight = true;
+          btns.forEach((btn) => {
+            const isSel = btn.classList.contains("sel");
+            const isCorrect = correctSet.has(btn.textContent);
+            btn.disabled = true;
+            btn.classList.remove("sel");
+            if (isSel && isCorrect) {
+              btn.classList.add("ok");
+            } else if (isSel && !isCorrect) {
+              btn.classList.add("bad");
+              allRight = false;
+            } else if (!isSel && isCorrect) {
+              btn.classList.add("missed");
+              allRight = false;
+            }
+          });
+          if (allRight) {
+            score.good++;
+            roundCorrect++;
+            el.mood.src = HAPPY_IMG;
+            setBox(q.id, 1);
+          } else {
+            score.wrong++;
+            el.mood.src = SAD_IMG;
+            setBox(q.id, 0);
+          }
+          roundRemaining = Math.max(0, roundRemaining - 1);
+          updateScore();
+          setTimeout(finishUnit, allRight ? 800 : 1800);
+        };
+        el.multiSubmit._onSubmit = onSubmit;
+        el.multiSubmit.addEventListener("click", onSubmit);
+      }
+
       function mark(type) {
         const unit = currentUnit();
         if (!unit) return;
-        if (unit.type === "match") return; // no buttons in match mode
+        if (
+          unit.type === "match" ||
+          unit.type === "mc" ||
+          unit.type === "cat" ||
+          unit.type === "odd" ||
+          unit.type === "multi"
+        )
+          return;
         if (unit.type === "tf") {
           const claimsTrue = type === "good";
           const correct = claimsTrue === !!unit.q.answerTrue;
           if (correct) {
             score.good++;
+            roundCorrect++;
             el.mood.src = HAPPY_IMG;
             setBox(unit.q.id, 1);
           } else {
@@ -675,7 +1256,6 @@
           finishUnit();
           return;
         }
-        // single mode (term/def)
         const c = unit.card;
         if (!c) return;
         const b = getBox(c.id);
@@ -686,6 +1266,7 @@
         if (answeredCorrectly) {
           nb = b + 1;
           score.good++;
+          roundCorrect++;
           el.mood.src = HAPPY_IMG;
         } else {
           nb = 0;
@@ -699,9 +1280,8 @@
       }
 
       function updateScore() {
-        const attempts = score.good + score.wrong; // graded attempts
-        const acc = attempts ? score.good / attempts : 1; // start at 100%
-        // Update pie chart stroke-dasharray based on circumference of r=34 -> ~213.6
+        const attempts = score.good + score.wrong;
+        const acc = attempts ? score.good / attempts : 1;
         const r = 34;
         const len = 2 * Math.PI * r;
         const dash = Math.max(0, Math.min(len, len * acc));
@@ -713,19 +1293,23 @@
       el.good.addEventListener("click", () => mark("good"));
       el.wrong.addEventListener("click", () => mark("wrong"));
       el.newRound.addEventListener("click", () => {
-        // Reset progress and start a new mixed, limited round
-        localStorage.removeItem(LS_KEY);
-        Object.keys(progress).forEach((k) => delete progress[k]);
+        if (!currentGame) return;
+        localStorage.removeItem(lsKey());
+        progress = {};
         score.good = 0;
         score.wrong = 0;
         el.mood.src = HAPPY_IMG;
         updateScore();
-        buildQueue2();
+        buildQueue();
+      });
+      el.changeGame.addEventListener("click", () => {
+        showSelect();
       });
 
-      // No keyboard listeners for mobile-focused interaction.
-
-      buildQueue2();
+      el.mood.src = HAPPY_IMG;
+      updateScore();
+      renderGameSelect();
+      showSelect();
     </script>
   </body>
 </html>

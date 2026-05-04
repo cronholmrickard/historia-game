@@ -1,0 +1,82 @@
+[
+  {
+    "q": "Vilka tre stämmer om judendom?",
+    "options": [
+      "Davidsstjärnan är vanligaste symbol",
+      "Sabbaten är vilodagen",
+      "Allra flest judar bor i Israel",
+      "Tora innehåller Bibelns fem första böcker",
+      "Judendomen är världens största religion"
+    ],
+    "correct": [
+      "Davidsstjärnan är vanligaste symbol",
+      "Sabbaten är vilodagen",
+      "Tora innehåller Bibelns fem första böcker"
+    ]
+  },
+  {
+    "q": "Vilka två stämmer om Muhammed?",
+    "options": [
+      "Han föddes i Mekka",
+      "Han fick budskap från ängeln Gabriel",
+      "Han skrev själv ner Koranen",
+      "Han dog och begravdes i Mekka",
+      "Han var Guds son"
+    ],
+    "correct": [
+      "Han föddes i Mekka",
+      "Han fick budskap från ängeln Gabriel"
+    ]
+  },
+  {
+    "q": "Vilka tre är kristna högtider?",
+    "options": ["Pingst", "Pesach", "Advent", "Eid al-fitr", "Påsk"],
+    "correct": ["Pingst", "Advent", "Påsk"]
+  },
+  {
+    "q": "Vilka tre tillhör islams fem pelare?",
+    "options": [
+      "Trosbekännelsen",
+      "Bön fem gånger om dagen",
+      "Fastan under ramadan",
+      "Vigsel i moskén",
+      "Söndagsbön i kyrkan"
+    ],
+    "correct": [
+      "Trosbekännelsen",
+      "Bön fem gånger om dagen",
+      "Fastan under ramadan"
+    ]
+  },
+  {
+    "q": "Vilka tre påståenden stämmer om alla tre abrahamitiska religioner?",
+    "options": [
+      "De har sina rötter i Mellanöstern",
+      "De är monoteistiska",
+      "De erkänner Abraham som stamfader",
+      "De har samma heliga bok",
+      "De har samma vilodag"
+    ],
+    "correct": [
+      "De har sina rötter i Mellanöstern",
+      "De är monoteistiska",
+      "De erkänner Abraham som stamfader"
+    ]
+  },
+  {
+    "q": "Vilka tre tillhör judendomens heliga skrifter?",
+    "options": ["Tora", "Nevim", "Ketuvim", "Koranen", "Nya testamentet"],
+    "correct": ["Tora", "Nevim", "Ketuvim"]
+  },
+  {
+    "q": "Vilka två stämmer om Jesus?",
+    "options": [
+      "Han föddes i Betlehem",
+      "Han växte upp i Mekka",
+      "Han korsfästes på Golgata",
+      "Han skrev själv evangelierna",
+      "Han var Muhammeds farbror"
+    ],
+    "correct": ["Han föddes i Betlehem", "Han korsfästes på Golgata"]
+  }
+]

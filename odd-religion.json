@@ -1,0 +1,42 @@
+[
+  {
+    "items": ["Tora", "Nevim", "Ketuvim", "Koranen"],
+    "outlier": "Koranen"
+  },
+  {
+    "items": ["Korset", "Krucifix", "Fisken", "Davidsstjärnan"],
+    "outlier": "Davidsstjärnan"
+  },
+  {
+    "items": ["Mekka", "Medina", "Yathrib", "Betlehem"],
+    "outlier": "Betlehem"
+  },
+  {
+    "items": ["Eid al-fitr", "Eid al-adha", "Ramadan", "Pesach"],
+    "outlier": "Pesach"
+  },
+  {
+    "items": ["Katoliker", "Ortodoxa", "Protestanter", "Sunniter"],
+    "outlier": "Sunniter"
+  },
+  {
+    "items": ["Bar mitzva", "Bat mitzva", "Dop", "Kosher"],
+    "outlier": "Dop"
+  },
+  {
+    "items": ["Påven", "Ärkebiskopen", "Präst", "Imam"],
+    "outlier": "Imam"
+  },
+  {
+    "items": ["Matteus", "Markus", "Lukas", "Petrus"],
+    "outlier": "Petrus"
+  },
+  {
+    "items": ["Mose", "David", "Salomo", "Muhammed"],
+    "outlier": "Muhammed"
+  },
+  {
+    "items": ["Jul", "Påsk", "Pingst", "Ramadan"],
+    "outlier": "Ramadan"
+  }
+]

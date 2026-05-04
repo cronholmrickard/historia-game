@@ -1,0 +1,387 @@
+[
+  {
+    "q": "I vilken stad ska Abraham enligt myten ha levt först?",
+    "options": ["Mekka", "Jerusalem", "Ur", "Kanaan"],
+    "correct": "Ur"
+  },
+  {
+    "q": "Vad heter Abraham på arabiska?",
+    "options": ["Isak", "Ibrahim", "Ismael", "Muhammed"],
+    "correct": "Ibrahim"
+  },
+  {
+    "q": "Vad betyder ordet monoteism?",
+    "options": [
+      "tro på naturen",
+      "tro på en enda gud",
+      "tro på flera gudar",
+      "tro på inga gudar"
+    ],
+    "correct": "tro på en enda gud"
+  },
+  {
+    "q": "Vilken är muslimernas heliga bok?",
+    "options": ["Bibeln", "Toran", "Koranen", "Talmud"],
+    "correct": "Koranen"
+  },
+  {
+    "q": "Vem är enligt traditionen stamfader för det arabiska folket?",
+    "options": ["Isak", "Sara", "Ismael", "Muhammed"],
+    "correct": "Ismael"
+  },
+  {
+    "q": "Hur länge sedan fick Muhammed enligt traditionen budskap från Gud?",
+    "options": ["4000 år", "3000 år", "2000 år", "1400 år"],
+    "correct": "1400 år"
+  },
+  {
+    "q": "Vilket land kommer Abraham fram till efter sin långa vandring?",
+    "options": ["Egypten", "Saudiarabien", "Kanaan", "Mesopotamien"],
+    "correct": "Kanaan"
+  },
+  {
+    "q": "Vad kallas en viktig person som funnits tidigt i ett folks historia?",
+    "options": ["Profet", "Stamfader", "Helgon", "Lärling"],
+    "correct": "Stamfader"
+  },
+  {
+    "q": "I vilket område levde Muhammed?",
+    "options": [
+      "det som nu är Israel",
+      "det som nu är Saudiarabien",
+      "det som nu är Egypten",
+      "det som nu är Spanien"
+    ],
+    "correct": "det som nu är Saudiarabien"
+  },
+  {
+    "q": "Vilken stad är ursprungsplats för både judendom och kristendom?",
+    "options": ["Mekka", "Medina", "Jerusalem", "Ur"],
+    "correct": "Jerusalem"
+  },
+  {
+    "q": "Vad är samlingsnamnet för judendomens tre heliga skrifter?",
+    "options": ["Bibeln", "Tanakh", "Tora", "Koranen"],
+    "correct": "Tanakh"
+  },
+  {
+    "q": "Vad kallas mat som lagats enligt judiska matregler?",
+    "options": ["halal", "kosher", "vegetarisk", "tora"],
+    "correct": "kosher"
+  },
+  {
+    "q": "På vilket berg fick Mose enligt Bibeln de tio buden?",
+    "options": ["Olivberget", "Berget Sinai", "Berget Tabor", "Ararat"],
+    "correct": "Berget Sinai"
+  },
+  {
+    "q": "Vem fick enligt Bibeln de tio buden av Gud?",
+    "options": ["Abraham", "David", "Mose", "Salomo"],
+    "correct": "Mose"
+  },
+  {
+    "q": "Vilken kung byggde templet i Jerusalem?",
+    "options": ["David", "Saul", "Salomo", "Mose"],
+    "correct": "Salomo"
+  },
+  {
+    "q": "När på året firas pesach?",
+    "options": ["vintern", "våren", "sommaren", "hösten"],
+    "correct": "våren"
+  },
+  {
+    "q": "Vad bär en pojke ofta på pannan under sin bar mitzva?",
+    "options": ["kippa", "baldakin", "tefillin", "kantor"],
+    "correct": "tefillin"
+  },
+  {
+    "q": "Vilken är judendomens äldsta symbol?",
+    "options": ["Davidsstjärnan", "Menoran", "Korset", "Halvmånen"],
+    "correct": "Menoran"
+  },
+  {
+    "q": "Vilken judisk riktning följer reglerna mest noga?",
+    "options": ["reformerta", "konservativa", "ortodoxa", "messianska"],
+    "correct": "ortodoxa"
+  },
+  {
+    "q": "Vad kallas den person som leder gudstjänsten i synagogan?",
+    "options": ["präst", "rabbin", "imam", "profet"],
+    "correct": "rabbin"
+  },
+  {
+    "q": "Vilken högtid kallas också för försoningsdagen?",
+    "options": ["Pesach", "Sukkot", "Chanukka", "Jom kippur"],
+    "correct": "Jom kippur"
+  },
+  {
+    "q": "I vilket land bor det allra flest judar i världen?",
+    "options": ["Israel", "Sverige", "USA", "Tyskland"],
+    "correct": "USA"
+  },
+  {
+    "q": "Vilket år beslutade FN att en del av Palestina skulle bli landet Israel?",
+    "options": ["1900", "1918", "1948", "1967"],
+    "correct": "1948"
+  },
+  {
+    "q": "Vad betyder ordet evangelium?",
+    "options": ["lag", "glatt budskap", "profet", "vilodag"],
+    "correct": "glatt budskap"
+  },
+  {
+    "q": "Vem dömde Jesus till döden?",
+    "options": [
+      "Judas Iskariot",
+      "Pontus Pilatus",
+      "Johannes döparen",
+      "Den romerske kejsaren"
+    ],
+    "correct": "Pontus Pilatus"
+  },
+  {
+    "q": "Vilken lärjunge förrådde Jesus?",
+    "options": ["Petrus", "Lukas", "Matteus", "Judas Iskariot"],
+    "correct": "Judas Iskariot"
+  },
+  {
+    "q": "Vad heter avrättningsplatsen där Jesus korsfästes?",
+    "options": ["Sinai", "Golgata", "Olivberget", "Nasaret"],
+    "correct": "Golgata"
+  },
+  {
+    "q": "Hur många böcker finns det i Nya testamentet?",
+    "options": ["4", "12", "27", "66"],
+    "correct": "27"
+  },
+  {
+    "q": "Vilken kristen riktning leds av påven i Rom?",
+    "options": ["protestantisk", "ortodox", "katolsk", "anglikansk"],
+    "correct": "katolsk"
+  },
+  {
+    "q": "Vad firas på påskdagen?",
+    "options": [
+      "Jesus födelse",
+      "Jesus uppståndelse från de döda",
+      "Jesus dop",
+      "Jesus dödsdag"
+    ],
+    "correct": "Jesus uppståndelse från de döda"
+  },
+  {
+    "q": "Vad äter man traditionellt på fettisdagen?",
+    "options": ["paskal", "semla", "ojäst bröd", "lussekatt"],
+    "correct": "semla"
+  },
+  {
+    "q": "Vilken är den äldsta kristna symbolen?",
+    "options": ["Korset", "Fisken", "Krucifixet", "Duvan"],
+    "correct": "Fisken"
+  },
+  {
+    "q": "Hur många dagar efter påsk firas Kristi himmelsfärd?",
+    "options": ["7", "12", "30", "40"],
+    "correct": "40"
+  },
+  {
+    "q": "I vilken stad föddes Jesus enligt Bibeln?",
+    "options": ["Nasaret", "Jerusalem", "Betlehem", "Rom"],
+    "correct": "Betlehem"
+  },
+  {
+    "q": "Vad kallas en kristen gudstjänst där nattvarden ingår?",
+    "options": ["mässa", "dop", "predikan", "konfirmation"],
+    "correct": "mässa"
+  },
+  {
+    "q": "Hur gammal brukar man vara när man konfirmerar sig i Svenska kyrkan?",
+    "options": ["8 år", "12 år", "14 år", "18 år"],
+    "correct": "14 år"
+  },
+  {
+    "q": "Hur många lärjungar valde Jesus ut som sina medhjälpare?",
+    "options": ["7", "10", "12", "27"],
+    "correct": "12"
+  },
+  {
+    "q": "Vad symboliserar duvan inom kristendomen?",
+    "options": ["Jesus", "den heliga anden", "fred", "Maria"],
+    "correct": "den heliga anden"
+  },
+  {
+    "q": "I vilken stad föddes profeten Muhammed?",
+    "options": ["Medina", "Mekka", "Jerusalem", "Bagdad"],
+    "correct": "Mekka"
+  },
+  {
+    "q": "Vad heter den fyrkantiga byggnaden i Mekka som muslimer vallfärdar till?",
+    "options": ["Klippmoskén", "Kaba", "Minareten", "Nischen"],
+    "correct": "Kaba"
+  },
+  {
+    "q": "Hur många pelare har islam?",
+    "options": ["3", "4", "5", "7"],
+    "correct": "5"
+  },
+  {
+    "q": "Vad kallas fastemånaden i islam?",
+    "options": ["eid al-fitr", "eid al-adha", "ramadan", "hajj"],
+    "correct": "ramadan"
+  },
+  {
+    "q": "Hur många kapitel (suror) har Koranen?",
+    "options": ["27", "66", "100", "114"],
+    "correct": "114"
+  },
+  {
+    "q": "Vilken ängel förmedlade enligt islam Koranens text till Muhammed?",
+    "options": ["Mikael", "Rafael", "Gabriel", "Israfil"],
+    "correct": "Gabriel"
+  },
+  {
+    "q": "Vad hette Muhammeds första hustru?",
+    "options": ["Aisha", "Khadija", "Fatima", "Maryam"],
+    "correct": "Khadija"
+  },
+  {
+    "q": "Vilken stad fick det nya namnet Medina, 'profetens stad'?",
+    "options": ["Mekka", "Yathrib", "Jerusalem", "Damaskus"],
+    "correct": "Yathrib"
+  },
+  {
+    "q": "Vilken är den största gruppen muslimer i världen?",
+    "options": ["shiiter", "sunniter", "sufier", "druser"],
+    "correct": "sunniter"
+  },
+  {
+    "q": "Vad kallas den avgift som muslimer ger till välgörenhet?",
+    "options": ["hajj", "zakat", "salat", "sura"],
+    "correct": "zakat"
+  },
+  {
+    "q": "När firas eid al-fitr?",
+    "options": [
+      "när vallfärden är klar",
+      "när ramadan är slut",
+      "vid Muhammeds födelse",
+      "vid det muslimska nyåret"
+    ],
+    "correct": "när ramadan är slut"
+  },
+  {
+    "q": "I vilket land bor det flest muslimer?",
+    "options": ["Saudiarabien", "Iran", "Indonesien", "Egypten"],
+    "correct": "Indonesien"
+  },
+  {
+    "q": "Hur många gånger om dagen ska en muslim be?",
+    "options": ["3", "5", "7", "10"],
+    "correct": "5"
+  },
+  {
+    "q": "Vad kallas tornet vid en moské där bönen ropas ut?",
+    "options": ["minaret", "nisch", "kupol", "kaba"],
+    "correct": "minaret"
+  },
+  {
+    "q": "Vad kallas en religiös ledare som leder bönen i en moské?",
+    "options": ["rabbin", "präst", "imam", "ärkebiskop"],
+    "correct": "imam"
+  },
+  {
+    "q": "Inom vilken religion är synagogan samlingsplatsen för gudstjänst?",
+    "options": ["judendom", "kristendom", "islam", "buddhism"],
+    "correct": "judendom"
+  },
+  {
+    "q": "Hur ser islam på Jesus?",
+    "options": [
+      "Som Guds son och Messias",
+      "Som en profet, men inte den sista",
+      "Som den sista profeten",
+      "Som en vanlig människa utan religiös betydelse"
+    ],
+    "correct": "Som en profet, men inte den sista"
+  },
+  {
+    "q": "Vilken är världens näst största religion?",
+    "options": ["judendom", "kristendom", "islam", "hinduism"],
+    "correct": "islam"
+  },
+  {
+    "q": "Vilken av de tre abrahamitiska religionerna har inga detaljerade regler om mat och kläder?",
+    "options": ["judendom", "kristendom", "islam", "alla har sådana regler"],
+    "correct": "kristendom"
+  },
+  {
+    "q": "Vilka två religioner har samma Gamla testamente som grund?",
+    "options": [
+      "judendom och islam",
+      "kristendom och islam",
+      "judendom och kristendom",
+      "alla tre"
+    ],
+    "correct": "judendom och kristendom"
+  },
+  {
+    "q": "Vad betyder ordet muslim?",
+    "options": ["krigare", "en som överlämnar sig", "profet", "troende"],
+    "correct": "en som överlämnar sig"
+  },
+  {
+    "q": "Vad symboliserar de sju armarna på menoran?",
+    "options": [
+      "de sju profeterna",
+      "de sju dagar Gud behövde för att skapa världen",
+      "de sju heliga städerna",
+      "de sju buden"
+    ],
+    "correct": "de sju dagar Gud behövde för att skapa världen"
+  },
+  {
+    "q": "Vad betyder ordet advent?",
+    "options": ["vila", "ankomst", "glädje", "ljus"],
+    "correct": "ankomst"
+  },
+  {
+    "q": "Vad betyder ordet konfirmation?",
+    "options": ["bekräftelse", "att döpa", "fasta", "gemenskap"],
+    "correct": "bekräftelse"
+  },
+  {
+    "q": "Hur länge varade judarnas fångenskap i Babylonien?",
+    "options": ["7 år", "30 år", "50 år", "100 år"],
+    "correct": "50 år"
+  },
+  {
+    "q": "På vilket århundrade växte den ortodoxa kyrkan fram?",
+    "options": ["600-talet", "1000-talet", "1500-talet", "1800-talet"],
+    "correct": "1000-talet"
+  },
+  {
+    "q": "På vilket århundrade uppstod protestantismen?",
+    "options": ["1300-talet", "1500-talet", "1700-talet", "1900-talet"],
+    "correct": "1500-talet"
+  },
+  {
+    "q": "Vad finns enligt islamisk tradition i hörnet av Kaba?",
+    "options": [
+      "en helig staty",
+      "en helig svart sten",
+      "en bok",
+      "en grav"
+    ],
+    "correct": "en helig svart sten"
+  },
+  {
+    "q": "Hur länge stannade Mose enligt Bibeln på berget Sinai?",
+    "options": ["10 dagar", "30 dagar", "40 dagar", "50 dagar"],
+    "correct": "40 dagar"
+  },
+  {
+    "q": "Vilket år börjar den islamiska tideräkningen?",
+    "options": ["år 0", "år 570", "år 622", "år 1948"],
+    "correct": "år 622"
+  }
+]

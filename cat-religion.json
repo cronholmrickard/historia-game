@@ -1,0 +1,86 @@
+[
+  {
+    "q": "Sortera symbolerna till rätt religion",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Davidsstjärnan", "category": "judendom" },
+      { "text": "Menoran", "category": "judendom" },
+      { "text": "Krucifix", "category": "kristendom" },
+      { "text": "Fisken", "category": "kristendom" },
+      { "text": "Månskäran", "category": "islam" },
+      { "text": "Kaba", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Sortera de heliga skrifterna och delarna till rätt religion",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Tora", "category": "judendom" },
+      { "text": "Tanakh", "category": "judendom" },
+      { "text": "Nya testamentet", "category": "kristendom" },
+      { "text": "Evangelium", "category": "kristendom" },
+      { "text": "Koranen", "category": "islam" },
+      { "text": "Sura", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Sortera samlingsplatser och religiösa ledare",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Synagoga", "category": "judendom" },
+      { "text": "Rabbin", "category": "judendom" },
+      { "text": "Kyrka", "category": "kristendom" },
+      { "text": "Präst", "category": "kristendom" },
+      { "text": "Moské", "category": "islam" },
+      { "text": "Imam", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Vem hör hemma var?",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Mose", "category": "judendom" },
+      { "text": "David", "category": "judendom" },
+      { "text": "Maria", "category": "kristendom" },
+      { "text": "Pontus Pilatus", "category": "kristendom" },
+      { "text": "Muhammed", "category": "islam" },
+      { "text": "Khadija", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Sortera de heliga platserna",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Berget Sinai", "category": "judendom" },
+      { "text": "Babylonien", "category": "judendom" },
+      { "text": "Betlehem", "category": "kristendom" },
+      { "text": "Golgata", "category": "kristendom" },
+      { "text": "Mekka", "category": "islam" },
+      { "text": "Medina", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Sortera högtiderna till rätt religion",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Sabbat", "category": "judendom" },
+      { "text": "Pesach", "category": "judendom" },
+      { "text": "Advent", "category": "kristendom" },
+      { "text": "Pingst", "category": "kristendom" },
+      { "text": "Ramadan", "category": "islam" },
+      { "text": "Eid al-fitr", "category": "islam" }
+    ]
+  },
+  {
+    "q": "Sortera riter och praktiker",
+    "categories": ["judendom", "kristendom", "islam"],
+    "items": [
+      { "text": "Bar mitzva", "category": "judendom" },
+      { "text": "Kosher", "category": "judendom" },
+      { "text": "Dop", "category": "kristendom" },
+      { "text": "Konfirmation", "category": "kristendom" },
+      { "text": "Vallfärd till Mekka", "category": "islam" },
+      { "text": "Trosbekännelsen", "category": "islam" }
+    ]
+  }
+]
